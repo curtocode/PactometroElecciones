@@ -1,0 +1,36 @@
+﻿<Window x:Class="PracticaFInal.VentanaSecundaria"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PracticaFInal"
+        mc:Ignorable="d"
+        Title="VentanaSecundaria" Height="450" Width="800">
+    <!-- Definir las filas del Grid para separar los DataGrids -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+
+        <!-- El primer DataGrid para las elecciones, asignado a la primera fila -->
+        <DataGrid x:Name="dgElecciones" AutoGenerateColumns="False" IsReadOnly="True" Margin="10" Grid.Row="0" 
+                  SelectionChanged="dgElecciones_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Elección" Binding="{Binding Tipo}" />
+                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha}" />
+                <DataGridTextColumn Header="Número de Escaños" Binding="{Binding EscañosTotales}" />
+                <DataGridTextColumn Header="Mayoría Absoluta" Binding="{Binding MayoriaAbsoluta}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- El segundo DataGrid para los detalles de la elección seleccionada, asignado a la segunda fila -->
+        <DataGrid x:Name="dgDetalles" AutoGenerateColumns="False" IsReadOnly="True" Margin="10" Grid.Row="1" MouseLeftButtonDown="dgDetalles_MouseMove">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="PARTIDO" Binding="{Binding Nombre}" />
+                <DataGridTextColumn Header="Escaños" Binding="{Binding Escaños}" />
+                <!-- Agrega más columnas según sea necesario -->
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

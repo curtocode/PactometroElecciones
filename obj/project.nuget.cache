@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "zQj/IwcOu20uJJGRpWTIjgy7/foeVrQlco1q8bX5EnLzFeTGw2JuR7X0h9AKJnswODD4rNai73ORYYXaraIpuA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Alejandro\\Desktop\\USAL\\tercerCurso\\igu\\PracticaFInal\\PracticaFInal\\PracticaFInal.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alejandro\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
