@@ -24,9 +24,12 @@ namespace PracticaFInal
         CargarDatos datos;
         List<Elecciones> elecciones;
         public delegate void EleccionSeleccionadaHandler(Elecciones eleccionSeleccionada);
+        public delegate void EleccionesCargadasHandler(List<Elecciones> elecciones);
+
 
         // Definir el evento basado en ese delegado
         public event EleccionSeleccionadaHandler EleccionSeleccionada;
+        public event EleccionesCargadasHandler EleccionesCargadas;
 
         public VentanaSecundaria()
         {
@@ -41,6 +44,7 @@ namespace PracticaFInal
             datos = new CargarDatos(rutaArchivo);
             elecciones = datos.LeerDatosElecciones();
             dgElecciones.ItemsSource = elecciones;
+            
         }
         private void dgDetalles_MouseMove(object sender, MouseEventArgs e)
         {
@@ -53,6 +57,7 @@ namespace PracticaFInal
         {
             if (dgElecciones.SelectedItem is Elecciones eleccionSeleccionada)
             {
+                EleccionesCargadas?.Invoke(this.elecciones);
                 EleccionSeleccionada?.Invoke(eleccionSeleccionada);
                 // Asumiendo que 'eleccionSeleccionada' tiene una propiedad 'Partidos' que es una lista de detalles del partido
                 dgDetalles.ItemsSource = eleccionSeleccionada.Partidos;

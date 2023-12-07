@@ -15,17 +15,24 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <!-- Primera columna ocupa la mitad del ancho -->
             <ColumnDefinition Width="*"/>
             <!-- Segunda columna ocupa la otra mitad del ancho -->
         </Grid.ColumnDefinitions>
+        
 
         <Canvas x:Name="canvasGrafico" Background="White" Grid.ColumnSpan="2" Margin="10">
             <!-- Los elementos del gráfico se agregarán aquí dinámicamente -->
         </Canvas>
-
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Grid.ColumnSpan="2">
+            <Button x:Name="btnFinalizarCoalicion" Content="Finalizar Coalición" Height="20" Width="140" Click="BtnFinalizarCoalicion_Click" Visibility="Collapsed"/>
+            <Button x:Name="btnPactometro" Content="Pactómetro" Height="20" Width="120" Click="BtnPactometro_Click"/>
+            <Button x:Name="btnComparativa" Content="Comparativa" Height="20" Width="120" Click="BtnDibujarComparativa_Click"/>
+            
+        </StackPanel>
         <!-- PactometroPanel ahora está dentro de un Grid -->
         <Grid x:Name="pactometroPanel" Visibility="Collapsed" Grid.ColumnSpan="2" Margin="10">
             <Grid.ColumnDefinitions>
@@ -44,6 +51,6 @@
             </Canvas>
         </Grid>
 
-        <Button x:Name="btnPactometro" Content="Pactómetro" HorizontalAlignment="Left" VerticalAlignment="Top" Click="BtnPactometro_Click" Height="20" Width="120" Margin="0,-5,0,0"/>
+        
     </Grid>
 </Window>
