@@ -69,7 +69,7 @@ namespace PracticaFInal
                 int mayoriaAbsoluta = eleccionActual.MayoriaAbsoluta;
                 TextBlock tituloElecciones = new TextBlock
                 {
-                    Text = eleccionActual.Tipo,
+                    Text = eleccionActual.Tipo + " " + eleccionActual.Fecha,
                     Width = canvasGrafico.ActualWidth - 50, // Deja espacio para la leyenda
                     TextAlignment = TextAlignment.Center,
                     FontWeight = FontWeights.Bold
@@ -88,7 +88,7 @@ namespace PracticaFInal
         {
             columna.Children.Clear();
             double margin = columna.Margin.Top; // Margen general para la izquierda y la derecha
-            int totalEscaños = eleccionActual.Partidos.Sum(p => p.Escaños); // Suma los escaños de todos los partidos
+            int totalEscaños = mayoriaAbsoluta * 2 + 1; // Suma los escaños de todos los partidos
             double scaleFactor = (columna.ActualHeight - margin * 2) / totalEscaños;
 
 
@@ -154,6 +154,7 @@ namespace PracticaFInal
                 rect.MouseLeftButtonDown += (s, e) => {
                     btnFinalizarCoalicion.Visibility = Visibility.Visible;
                     RemoverPartidoDeColumna(partido);
+                    
                 };
                 textBlock.MouseLeftButtonDown += (s, e) => {
                     btnFinalizarCoalicion.Visibility = Visibility.Visible;
@@ -190,11 +191,19 @@ namespace PracticaFInal
         private void RemoverPartidoDeColumna(Partido partido)
         {
             // Remover el partido de la lista correspondiente y actualizar la interfaz
-            if (partidosIzquierda.Remove(partido) || partidosDerecha.Remove(partido))
+            if (partidosIzquierda.Remove(partido))
             {
                 partidosArrastrados.Remove(partido);
-                DibujarGraficoConPartidos();
+                partidosDerecha.Add(partido);
+
             }
+            else if (partidosDerecha.Remove(partido))
+            {
+                partidosArrastrados.Remove(partido);
+                partidosIzquierda.Add(partido);
+                
+            }
+            DibujarGraficoConPartidos();
         }
         private void VentanaSecundaria_EleccionesCargadas(List<Elecciones> eleccionesCargadas)
         {
@@ -244,11 +253,19 @@ namespace PracticaFInal
                 if (partidoConMayoria != null)
                 {
                     // Si un partido tiene mayoría absoluta, dibujarlo en un lado.
-                    partidosIzquierda.Clear();
-                    partidosIzquierda.Add(partidoConMayoria);
+                    partidosDerecha.Clear();
+                    partidosDerecha.Add(partidoConMayoria);
 
                     // Coloca el resto de los partidos en la otra columna.
-                    partidosDerecha = eleccionActual.Partidos.Where(p => p != partidoConMayoria).ToList();
+                    partidosIzquierda = eleccionActual.Partidos.Where(p => p != partidoConMayoria).ToList();
+                }
+                else
+                {
+                    //dibujar todos los partidos en la columna izquierda
+                    partidosArrastrados = eleccionActual.Partidos.ToHashSet();
+                    partidosIzquierda = eleccionActual.Partidos;
+                    partidosDerecha.Clear();
+
                 }
                 DibujarGraficoConPartidos();
             }
