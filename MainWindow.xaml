@@ -6,7 +6,37 @@
         xmlns:local="clr-namespace:PracticaFInal"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+
+    <!-- Recursos de la ventana -->
     <Window.Resources>
+
+        <!-- Estilo para los botones -->
+        <Style x:Key="BotonEstilo" TargetType="Button">
+            <Setter Property="Background" Value="DarkBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="3" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
+            <!-- Agrega interactividad al botón -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="DarkCyan"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- DataTemplate para los elementos arrastrables -->
         <DataTemplate x:Key="DraggableItemTemplate">
             <Border Padding="5" Margin="2" Background="LightGray">
@@ -15,22 +45,38 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFF8F8F8" Offset="0"/>
+                <!-- Color más claro en la parte superior -->
+                <GradientStop Color="#FFEFEFEF" Offset="1"/>
+                <!-- Color más oscuro en la parte inferior -->
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <!-- Primera columna ocupa la mitad del ancho -->
             <ColumnDefinition Width="*"/>
             <!-- Segunda columna ocupa la otra mitad del ancho -->
         </Grid.ColumnDefinitions>
-        
 
-        <Canvas x:Name="canvasGrafico" Background="White" Grid.ColumnSpan="2" Margin="10">
-            <!-- Los elementos del gráfico se agregarán aquí dinámicamente -->
-        </Canvas>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Grid.ColumnSpan="2" x:Name="scrollViewerGrafico">
+            <Canvas x:Name="canvasGrafico"  Grid.ColumnSpan="2" Margin="10">
+                <Canvas.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="AliceBlue" Offset="0"/>
+                        <!-- Color más claro en la parte superior -->
+                        <GradientStop Color="Aqua" Offset="1"/>
+                        <!-- Color más oscuro en la parte inferior -->
+                    </LinearGradientBrush>
+                </Canvas.Background>
+                <!-- Los elementos del gráfico se agregarán aquí dinámicamente -->
+            </Canvas>
+        </ScrollViewer>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Grid.ColumnSpan="2">
-            <Button x:Name="btnFinalizarCoalicion" Content="Finalizar Coalición" Height="20" Width="140" Click="BtnFinalizarCoalicion_Click" Visibility="Collapsed"/>
-            <Button x:Name="btnPactometro" Content="Pactómetro" Height="20" Width="120" Click="BtnPactometro_Click"/>
-            <Button x:Name="btnComparativa" Content="Comparativa" Height="20" Width="120" Click="BtnDibujarComparativa_Click"/>
+            <Button x:Name="btnFinalizarCoalicion" Content="Finalizar Coalición" Style="{StaticResource BotonEstilo}" Height="26" Width="140" Click="BtnFinalizarCoalicion_Click" Visibility="Collapsed"/>
+            <Button x:Name="btnPactometro" Content="Pactómetro" Style="{StaticResource BotonEstilo}" Height="26" Width="120" Click="BtnPactometro_Click"/>
+            <Button x:Name="btnComparativa" Content="Comparativa" Style="{StaticResource BotonEstilo}" Height="26" Width="120" Click="BtnDibujarComparativa_Click"/>
             
         </StackPanel>
         <!-- PactometroPanel ahora está dentro de un Grid -->
