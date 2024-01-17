@@ -1,0 +1,230 @@
+[
+  {
+    "Tipo": "ELECCIONES GENERALES",
+    "Fecha": "23/7/2023",
+    "EscañosTotales": 350,
+    "Partidos": [
+      {
+        "Nombre": "PP",
+        "Escaños": 136,
+        "Color": "#0344FF"
+      },
+      {
+        "Nombre": "PSOE",
+        "Escaños": 122,
+        "Color": "#FF1A03"
+      },
+      {
+        "Nombre": "VOX",
+        "Escaños": 33,
+        "Color": "#05C61F"
+      },
+      {
+        "Nombre": "SUMAR",
+        "Escaños": 31,
+        "Color": "#8F09FF"
+      },
+      {
+        "Nombre": "ERC",
+        "Escaños": 7,
+        "Color": ""
+      },
+      {
+        "Nombre": "JUNTS",
+        "Escaños": 7,
+        "Color": ""
+      },
+      {
+        "Nombre": "EH_BILDU",
+        "Escaños": 6,
+        "Color": ""
+      },
+      {
+        "Nombre": "EAJ_PNV",
+        "Escaños": 5,
+        "Color": ""
+      },
+      {
+        "Nombre": "BNG",
+        "Escaños": 1,
+        "Color": ""
+      },
+      {
+        "Nombre": "CCA",
+        "Escaños": 1,
+        "Color": ""
+      },
+      {
+        "Nombre": "UPN",
+        "Escaños": 1,
+        "Color": ""
+      }
+    ]
+  },
+  {
+    "Tipo": "ELECCIONES GENERALES",
+    "Fecha": "10/11/2019",
+    "EscañosTotales": 350,
+    "Partidos": [
+      {
+        "Nombre": "PSOE",
+        "Escaños": 120,
+        "Color": "#FF1A03"
+      },
+      {
+        "Nombre": "PP",
+        "Escaños": 89,
+        "Color": "#0344FF"
+      },
+      {
+        "Nombre": "VOX",
+        "Escaños": 52,
+        "Color": "#05C61F"
+      },
+      {
+        "Nombre": "PODEMOS",
+        "Escaños": 35,
+        "Color": "#8F09FF"
+      },
+      {
+        "Nombre": "ERC",
+        "Escaños": 13,
+        "Color": ""
+      },
+      {
+        "Nombre": "CS",
+        "Escaños": 10,
+        "Color": ""
+      },
+      {
+        "Nombre": "JUNTS",
+        "Escaños": 8,
+        "Color": ""
+      },
+      {
+        "Nombre": "EAJ_PNV",
+        "Escaños": 6,
+        "Color": ""
+      },
+      {
+        "Nombre": "EH_BILDU",
+        "Escaños": 5,
+        "Color": ""
+      },
+      {
+        "Nombre": "MASPAIS",
+        "Escaños": 3,
+        "Color": ""
+      },
+      {
+        "Nombre": "CUP_PR",
+        "Escaños": 2,
+        "Color": ""
+      },
+      {
+        "Nombre": "CCA",
+        "Escaños": 2,
+        "Color": ""
+      },
+      {
+        "Nombre": "BNG",
+        "Escaños": 1,
+        "Color": ""
+      },
+      {
+        "Nombre": "OTROS",
+        "Escaños": 4,
+        "Color": ""
+      }
+    ]
+  },
+  {
+    "Tipo": "ELECCIONES AUTONÓMICAS CyL",
+    "Fecha": "14/2/2022",
+    "EscañosTotales": 81,
+    "Partidos": [
+      {
+        "Nombre": "PP",
+        "Escaños": 31,
+        "Color": "#0344FF"
+      },
+      {
+        "Nombre": "PSOE",
+        "Escaños": 28,
+        "Color": "#FF1A03"
+      },
+      {
+        "Nombre": "VOX",
+        "Escaños": 13,
+        "Color": "#05C61F"
+      },
+      {
+        "Nombre": "UPL",
+        "Escaños": 3,
+        "Color": ""
+      },
+      {
+        "Nombre": "SY",
+        "Escaños": 3,
+        "Color": ""
+      },
+      {
+        "Nombre": "PODEMOS",
+        "Escaños": 1,
+        "Color": "#8F09FF"
+      },
+      {
+        "Nombre": "CS",
+        "Escaños": 1,
+        "Color": ""
+      },
+      {
+        "Nombre": "XAV",
+        "Escaños": 1,
+        "Color": ""
+      }
+    ]
+  },
+  {
+    "Tipo": "ELECCIONES AUTONÓMICAS CyL",
+    "Fecha": "26/5/2019",
+    "EscañosTotales": 81,
+    "Partidos": [
+      {
+        "Nombre": "PSOE",
+        "Escaños": 35,
+        "Color": "#FF1A03"
+      },
+      {
+        "Nombre": "PP",
+        "Escaños": 29,
+        "Color": "#0344FF"
+      },
+      {
+        "Nombre": "CS",
+        "Escaños": 12,
+        "Color": ""
+      },
+      {
+        "Nombre": "PODEMOS",
+        "Escaños": 2,
+        "Color": "#8F09FF"
+      },
+      {
+        "Nombre": "VOX",
+        "Escaños": 1,
+        "Color": "#05C61F"
+      },
+      {
+        "Nombre": "UPL",
+        "Escaños": 1,
+        "Color": ""
+      },
+      {
+        "Nombre": "XAV",
+        "Escaños": 1,
+        "Color": ""
+      }
+    ]
+  }
+]

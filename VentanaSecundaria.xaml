@@ -6,8 +6,41 @@
         xmlns:local="clr-namespace:PracticaFInal"
         mc:Ignorable="d"
         Title="VentanaSecundaria" Height="450" Width="800">
-    <!-- Definir las filas del Grid para separar los DataGrids -->
-    <Grid>
+    <Window.Resources>
+        <Style x:Key="BotonEstilo" TargetType="Button">
+        <Setter Property="Background" Value="DarkBlue"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="Padding" Value="5,5"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="Auto"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="3" Opacity="0.6"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="DarkCyan"/>
+            </Trigger>
+        </Style.Triggers>
+        <!--Hace que Los botones sean interactivos -->
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <!-- Expander para el menú lateral -->
+        <Expander DockPanel.Dock="Left" Header="Menú" Width="200">
+            <StackPanel>
+                <Button Content="Agregar Partidos y Elecciones" Click="BtnAgregarPartidos_Click"  Style="{StaticResource BotonEstilo}" Margin="10"/>
+                <Button Content="Borrar Eleccion" Click="BtnBorrarEleccion_Click" Style="{StaticResource BotonEstilo}" Margin="10"/>
+            </StackPanel>
+        </Expander>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="2*" />
@@ -25,12 +58,13 @@
         </DataGrid>
 
         <!-- El segundo DataGrid para los detalles de la elección seleccionada, asignado a la segunda fila -->
-        <DataGrid x:Name="dgDetalles" AutoGenerateColumns="False" IsReadOnly="True" Margin="10" Grid.Row="1" MouseLeftButtonDown="dgDetalles_MouseMove">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="PARTIDO" Binding="{Binding Nombre}" />
-                <DataGridTextColumn Header="Escaños" Binding="{Binding Escaños}" />
-                <!-- Agrega más columnas según sea necesario -->
-            </DataGrid.Columns>
-        </DataGrid>
-    </Grid>
+            <DataGrid x:Name="dgDetalles" AutoGenerateColumns="False" IsReadOnly="True" Margin="10" Grid.Row="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="PARTIDO" Binding="{Binding Nombre}" />
+                    <DataGridTextColumn Header="Escaños" Binding="{Binding Escaños}" />
+                </DataGrid.Columns>
+
+            </DataGrid>
+        </Grid>
+    </DockPanel>
 </Window>

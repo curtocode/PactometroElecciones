@@ -1,17 +1,12 @@
 ﻿using PracticaFInal.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace PracticaFInal
 {
@@ -20,49 +15,81 @@ namespace PracticaFInal
     /// </summary>
     public partial class VentanaSecundaria : Window
     {
-        private string rutaArchivo = "C:\\Users\\Alejandro\\Desktop\\USAL\\tercerCurso\\igu\\PracticaFInal\\PracticaFInal\\datos_electorales.json";
-        CargarDatos datos;
-        List<Elecciones> elecciones;
-        public delegate void EleccionSeleccionadaHandler(Elecciones eleccionSeleccionada);
-        public delegate void EleccionesCargadasHandler(List<Elecciones> elecciones);
-
-
-        // Definir el evento basado en ese delegado
-        public event EleccionSeleccionadaHandler EleccionSeleccionada;
-        public event EleccionesCargadasHandler EleccionesCargadas;
-
-        public VentanaSecundaria()
+        private ObservableCollection<Elecciones> elecciones;
+        public class EleccionesEventArgs : EventArgs
         {
-            InitializeComponent();
-            MostrarDatos();
-        }
-        private void MostrarDatos()
-        {
-            //controller = new ControllerNamespace.Controller(rutaArchivo);
-            
-            //List <Elecciones> elecciones = controller.cargarDatos.LeerDatosElecciones();
-            datos = new CargarDatos(rutaArchivo);
-            elecciones = datos.LeerDatosElecciones();
-            dgElecciones.ItemsSource = elecciones;
-            
-        }
-        private void dgDetalles_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed && dgDetalles.SelectedItem is Partido partido)
+            public List<Elecciones> Elecciones { get; private set; }
+            public Elecciones Eleccion { get; private set; }
+
+            public EleccionesEventArgs(List<Elecciones> elecciones)
             {
-                DragDrop.DoDragDrop(dgDetalles, partido, DragDropEffects.Move);
+                Elecciones = elecciones;
+            }
+
+            public EleccionesEventArgs(Elecciones eleccion)
+            {
+                Eleccion = eleccion;
             }
         }
+        public event EventHandler<EleccionesEventArgs> EleccionSeleccionada;
+        public event EventHandler<EleccionesEventArgs> EleccionesCargadas;
+        public event EventHandler EleccionEliminada;
+
+        public VentanaSecundaria(ObservableCollection<Elecciones> elecciones)
+        {
+            InitializeComponent();
+            this.elecciones = elecciones;
+            MostrarDatos();
+        }
+
+        private void MostrarDatos()
+        {
+                dgElecciones.ItemsSource = elecciones;
+           
+        }
+
+        private void VentanaAgregar_EleccionAgregada(Elecciones nuevaEleccion)
+        {
+            elecciones.Add(nuevaEleccion);
+            EleccionesCargadas?.Invoke(this, new EleccionesEventArgs(elecciones.ToList()));
+        }
+
         private void dgElecciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dgElecciones.SelectedItem is Elecciones eleccionSeleccionada)
             {
-                EleccionesCargadas?.Invoke(this.elecciones);
-                EleccionSeleccionada?.Invoke(eleccionSeleccionada);
-                // Asumiendo que 'eleccionSeleccionada' tiene una propiedad 'Partidos' que es una lista de detalles del partido
+                OnEleccionSeleccionada(eleccionSeleccionada);
                 dgDetalles.ItemsSource = eleccionSeleccionada.Partidos;
-                dgDetalles.MouseMove += dgDetalles_MouseMove;
+            }
+        }
+
+        protected virtual void OnEleccionSeleccionada(Elecciones eleccion)
+        {
+            EleccionSeleccionada?.Invoke(this, new EleccionesEventArgs(eleccion));
+        }
+        private void BtnAgregarPartidos_Click(object sender, RoutedEventArgs e)
+        {
+            VentanaAgregarElecciones ventanaAgregar = new VentanaAgregarElecciones();
+            ventanaAgregar.EleccionAgregada += VentanaAgregar_EleccionAgregada;
+            ventanaAgregar.ShowDialog(); // Abrir como ventana modal
+        }
+        private void BtnBorrarEleccion_Click(object sender, RoutedEventArgs e)
+        {
+            if (dgElecciones.SelectedItem is Elecciones eleccionSeleccionada)
+            {
+                elecciones.Remove(eleccionSeleccionada);
+                dgElecciones.ItemsSource = null;
+                dgElecciones.ItemsSource = elecciones;
+
+                EleccionEliminada?.Invoke(this, EventArgs.Empty); // Invocar el evento que hace que mi canvas de la main window se quede vacio cuando se elimina una elección
+                dgDetalles.ItemsSource = null;
+                
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione una elección para borrar.", "Elección no seleccionada", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }
 }
+

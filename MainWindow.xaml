@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PracticaFInal"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="950">
 
     <!-- Recursos de la ventana -->
     <Window.Resources>
@@ -29,12 +29,12 @@
                     <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="3" Opacity="0.6"/>
                 </Setter.Value>
             </Setter>
-            <!-- Agrega interactividad al botón -->
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="DarkCyan"/>
                 </Trigger>
             </Style.Triggers>
+            <!--Hace que Los botones sean interactivos -->
         </Style>
 
         <!-- DataTemplate para los elementos arrastrables -->
@@ -73,11 +73,16 @@
                 <!-- Los elementos del gráfico se agregarán aquí dinámicamente -->
             </Canvas>
         </ScrollViewer>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Grid.ColumnSpan="2">
-            <Button x:Name="btnFinalizarCoalicion" Content="Finalizar Coalición" Style="{StaticResource BotonEstilo}" Height="26" Width="140" Click="BtnFinalizarCoalicion_Click" Visibility="Collapsed"/>
-            <Button x:Name="btnPactometro" Content="Pactómetro" Style="{StaticResource BotonEstilo}" Height="26" Width="120" Click="BtnPactometro_Click"/>
-            <Button x:Name="btnComparativa" Content="Comparativa" Style="{StaticResource BotonEstilo}" Height="26" Width="120" Click="BtnDibujarComparativa_Click"/>
-            
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10" Grid.ColumnSpan="2">
+            <!-- StackPanel horizontal para los primeros botones -->
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="btnFinalizarCoalicion" Content="Finalizar Coalición" Style="{StaticResource BotonEstilo}" Height="26" Width="140" Click="BtnFinalizarCoalicion_Click" Visibility="Collapsed"/>
+                <Button x:Name="btnPactometro" Content="Pactómetro" Style="{StaticResource BotonEstilo}" Height="26" Width="120" Click="BtnPactometro_Click"/>
+                <Button x:Name="btnComparativa" Content="Comparativa" Style="{StaticResource BotonEstilo}" Height="26" Width="120" Click="BtnDibujarComparativa_Click"/>
+            </StackPanel>
+
+            <!-- Botón de ventana secundaria justo debajo del botón "Comparativa" -->
+            <Button Name="btnAbrirVentanaSecundaria" Content="Secundaria" Style="{StaticResource BotonEstilo}" Width="120" Click="BtnAbrirVentanaSecundaria_Click"/>
         </StackPanel>
         <!-- PactometroPanel ahora está dentro de un Grid -->
         <Grid x:Name="pactometroPanel" Visibility="Collapsed" Grid.ColumnSpan="2" Margin="10">
@@ -88,11 +93,11 @@
                 <!-- Segunda columna ocupa la otra mitad del ancho -->
             </Grid.ColumnDefinitions>
 
-            <Canvas x:Name="columnaIzquierda" Grid.Column="0" MinHeight="100" Margin="30" Background="LightBlue" AllowDrop="True">
+            <Canvas x:Name="columnaIzquierda" Grid.Column="0" MinHeight="100" Background="IndianRed" Margin="30">
                 <!-- Contenido de prueba -->
             </Canvas>
 
-            <Canvas x:Name="columnaDerecha" Grid.Column="1" MinHeight="100" Margin="30" AllowDrop="True" Background="PaleVioletRed">
+            <Canvas x:Name="columnaDerecha" Grid.Column="1" MinHeight="100" Margin="30" >
                 <!-- Contenido de prueba -->
             </Canvas>
         </Grid>

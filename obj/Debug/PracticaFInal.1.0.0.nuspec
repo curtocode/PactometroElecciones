@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>PracticaFInal</id>
+    <version>1.0.0</version>
+    <authors>PracticaFInal</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="706e689686d98c2df6dace25c360f53be3ec0a59" />
+    <dependencies>
+      <group targetFramework="net8.0-windows7.0">
+        <dependency id="Newtonsoft.Json" version="13.0.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net8.0-windows7.0">
+        <frameworkReference name="Microsoft.WindowsDesktop.App.WPF" />
+      </group>
+    </frameworkReferences>
+  </metadata>
+  <files>
+    <file src="C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\bin\Debug\net8.0-windows\PracticaFInal.runtimeconfig.json" target="lib\net8.0-windows7.0\PracticaFInal.runtimeconfig.json" />
+    <file src="C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\bin\Debug\net8.0-windows\PracticaFInal.dll" target="lib\net8.0-windows7.0\PracticaFInal.dll" />
+  </files>
+</package>

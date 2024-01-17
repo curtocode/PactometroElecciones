@@ -1,4 +1,5 @@
 ﻿using PracticaFInal.Model;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ControllerNamespace = PracticaFInal.Controller;
+using static PracticaFInal.VentanaSecundaria;
 
 namespace PracticaFInal
 {
@@ -20,30 +21,43 @@ namespace PracticaFInal
     {
         List<Partido> partidosIzquierda = new List<Partido>();
         List<Partido> partidosDerecha = new List<Partido>();
-        HashSet<Partido> partidosArrastrados = new HashSet<Partido>();
         private Elecciones eleccionActual;
         private List<Brush> coloresDisponibles;
-
-        List<Elecciones> MisElecciones;
-
+        private VentanaSecundaria ventanaSecundaria;
+        ObservableCollection<Elecciones> MisElecciones;
+        CargarDatos datos;
+        private string rutaArchivo = "datos_electorales.json";
         public MainWindow()
         {
             InitializeComponent();
+            MostrarDatos();
             AbrirVentanaSecundaria();
             ResetearColoresDisponibles();
             // Agrega los manejadores de eventos de arrastrar y soltar a las columnas
-            MisElecciones = new List<Elecciones>();
+            this.ResizeMode = ResizeMode.NoResize;
 
 
         }
-       
-        private void DibujarGraficoConPartidos()
+        private void MostrarDatos()
+        {
+            try
+            {
+                datos = new CargarDatos(rutaArchivo);
+                var eleccionesList = datos.LeerDatosElecciones();
+                MisElecciones = new ObservableCollection<Elecciones>(eleccionesList);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cargar datos: {ex.Message}");
+            }
+        }
+
+        private void Pactometro()
         {
             if (eleccionActual != null)
             {
 
                 int mayoriaAbsoluta = eleccionActual.MayoriaAbsoluta;
-                AñadirTituloElecciones();
 
 
                 // Asegurarte de que ambos gráficos utilicen la misma escala de altura máxima.
@@ -54,9 +68,12 @@ namespace PracticaFInal
         private void DibujarBarras(List<Partido> partidos, Canvas columna,int mayoriaAbsoluta)
         {
             //scrollViewerGrafico.Visibility = Visibility.Collapsed;
+            canvasGrafico.Width = Double.NaN;
+            this.UpdateLayout();
             columna.Children.Clear();
+            AñadirTituloElecciones();
             double margin = columna.Margin.Top; // Margen general para la izquierda y la derecha
-            int totalEscaños = mayoriaAbsoluta * 2 + 1; // Suma los escaños de todos los partidos
+            int totalEscaños = eleccionActual.EscañosTotales; // Suma los escaños de todos los partidos
             double scaleFactor = (columna.ActualHeight - margin * 2) / totalEscaños;
 
 
@@ -102,21 +119,11 @@ namespace PracticaFInal
 
                 columna.Children.Add(rect);
 
-                // Crea el TextBlock para el nombre del partido.
-                    var textBlock = new TextBlock
-                    {
-                        Text = $"{partido.Nombre} - {partido.Escaños}",
-                        Margin = new Thickness(5, 0, 0, 0),
-                        VerticalAlignment = VerticalAlignment.Bottom,
-                        
-                        
-                    };
+                // Crea el TextBlock para el nomb  if(partido.Escaños > 30)
+                AgregarNombrePartidoConMenosDe30Escaños(columna, partido, currentBottom, barHeight, margin);
 
-                // Posiciona el TextBlock a la derecha de la barra.
-                Canvas.SetBottom(textBlock, currentBottom + (barHeight / 2) - (textBlock.FontSize / 2)); // Centra verticalmente respecto a la barra.
-                Canvas.SetLeft(textBlock, 100 + margin * 2); // Coloca el texto a la derecha de la barra, ajusta según sea necesario.
+
                 rect.Name = "rect" + partido.Nombre;
-                textBlock.Name = "text" + partido.Nombre;
 
                 
                 rect.MouseLeftButtonDown += (s, e) => {
@@ -124,36 +131,109 @@ namespace PracticaFInal
                     RemoverPartidoDeColumna(partido);
                     
                 };
-                textBlock.MouseLeftButtonDown += (s, e) => {
-                    btnFinalizarCoalicion.Visibility = Visibility.Visible;
-                    RemoverPartidoDeColumna(partido);
-                };
-                rect.MouseEnter += (s, e) => ResaltarPartido(rect, textBlock, true);
-                rect.MouseLeave += (s, e) => ResaltarPartido(rect, textBlock, false);
-                textBlock.MouseEnter += (s, e) => ResaltarPartido(rect, textBlock, true);
-                textBlock.MouseLeave += (s, e) => ResaltarPartido(rect, textBlock, false);
+                rect.MouseEnter += (s, e) => ResaltarPartido(rect, true);
+                rect.MouseLeave += (s, e) => ResaltarPartido(rect, false);
 
-                columna.Children.Add(textBlock);
+
 
 
 
                 // Actualiza la posición inferior para la próxima barra.
                 currentBottom += barHeight;
+               
             }
         }
-        private void ResaltarPartido(Rectangle rect, TextBlock textBlock, bool resaltar)
+        private void AgregarNombrePartidoConMenosDe30Escaños(Canvas columna, Partido partido, double currentBottom, double barHeight, double margin)
+        {
+            int opacidad;
+            if(eleccionActual.Tipo.Equals("ELECCIONES GENERALES"))
+            {
+                if (partido.Escaños <= 30)
+                {
+                    opacidad = 0;
+                }
+                else
+                    opacidad = 1;
+            }
+            else 
+            {
+                if(partido.Escaños <= 10) 
+                {
+                    opacidad = 0;
+                }
+                else
+                {
+                    opacidad = 1;
+                }
+            }
+
+
+            TextBlock textBlock = new TextBlock
+            {
+                Text = $"{partido.Nombre} - {partido.Escaños}",
+                Margin = new Thickness(5, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Opacity = opacidad,
+               // Opacity = partido.Escaños < 30 ? 0 : 1 // Transparente si es menor a 30
+            };
+            textBlock.Name = "text" + partido.Nombre;
+
+            Canvas.SetBottom(textBlock, currentBottom + (barHeight / 2) - (textBlock.FontSize / 2));
+            Canvas.SetLeft(textBlock, 100 + margin * 2);
+
+
+            // Crea un rectángulo transparente para recibir eventos del ratón
+            Rectangle hitBox = new Rectangle
+            {
+                Width = 100, // El mismo ancho que el TextBlock
+                Height = barHeight, // La altura de la barra
+                Fill = Brushes.Transparent // Transparente para no afectar la visualización
+            };
+
+            Canvas.SetBottom(hitBox, currentBottom);
+            Canvas.SetLeft(hitBox, margin);
+            hitBox.MouseLeftButtonDown += (s, e) => {
+                btnFinalizarCoalicion.Visibility = Visibility.Visible;
+                RemoverPartidoDeColumna(partido);
+
+            };
+            hitBox.MouseEnter += (s, e) => ResaltarPartido(hitBox, true);
+            hitBox.MouseLeave += (s, e) => ResaltarPartido(hitBox, false);
+
+            // Eventos para cambiar la opacidad del TextBlock
+            
+            hitBox.MouseEnter += (s, e) => textBlock.Opacity = 1; // Hacer el texto opaco
+            if(eleccionActual.Tipo.Equals("ELECCIONES GENERALES")) { 
+                if (partido.Escaños <= 30)
+                    hitBox.MouseLeave += (s, e) => textBlock.Opacity = 0;
+                else
+                    hitBox.MouseLeave += (s, e) => textBlock.Opacity = 1;
+            }
+            else
+            {
+                if (partido.Escaños <= 10)
+                    hitBox.MouseLeave += (s, e) => textBlock.Opacity = 0;
+                else
+                    hitBox.MouseLeave += (s, e) => textBlock.Opacity = 1;
+            }
+
+            columna.Children.Add(hitBox);
+            columna.Children.Add(textBlock);
+        }
+
+        private void ResaltarPartido(Rectangle rect, bool resaltar)
         {
             if (resaltar)
             {
                 rect.Stroke = Brushes.Black; // Color del borde
                 rect.StrokeThickness = 4; // Grosor del borde
-                textBlock.FontWeight = FontWeights.ExtraBold;
+         
             }
             else
             {
                 rect.Stroke = null; // Quita el borde
                 rect.StrokeThickness = 0;
-                textBlock.FontWeight = FontWeights.Normal;
+                
             }
         }
         private void RemoverPartidoDeColumna(Partido partido)
@@ -161,40 +241,55 @@ namespace PracticaFInal
             // Remover el partido de la lista correspondiente y actualizar la interfaz
             if (partidosIzquierda.Remove(partido))
             {
-                partidosArrastrados.Remove(partido);
                 partidosDerecha.Add(partido);
 
             }
             else if (partidosDerecha.Remove(partido))
             {
-                partidosArrastrados.Remove(partido);
                 partidosIzquierda.Add(partido);
                 
             }
-            DibujarGraficoConPartidos();
+            Pactometro();
         }
-        private void VentanaSecundaria_EleccionesCargadas(List<Elecciones> eleccionesCargadas)
+        private void VentanaSecundaria_EleccionesCargadas(object sender, EleccionesEventArgs e)
         {
-            // Aquí manejas la lista de elecciones, por ejemplo, asignándola a una propiedad de la clase MainWindow.
-            // Asegúrate de tener una propiedad para almacenar las elecciones.
-            MisElecciones = eleccionesCargadas;
-
-            // Actúa en consecuencia, por ejemplo, actualizando la interfaz de usuario o lo que necesites hacer con la lista de elecciones.
+            //Son las elecciones cargadas
+            MisElecciones = new ObservableCollection<Elecciones>(e.Elecciones);
         }
         private void AbrirVentanaSecundaria()
         {
-            VentanaSecundaria ventanaSecundaria = new VentanaSecundaria();
-            ventanaSecundaria.EleccionSeleccionada += VentanaSecundaria_EleccionSeleccionada;
-            ventanaSecundaria.EleccionesCargadas += VentanaSecundaria_EleccionesCargadas;
-            ventanaSecundaria.Show(); // Show significa que se abre la ventana en modo NO modal
+            if (ventanaSecundaria == null)
+            {
+                ventanaSecundaria = new VentanaSecundaria(MisElecciones);
+                ventanaSecundaria.EleccionSeleccionada += VentanaSecundaria_EleccionSeleccionada;
+                ventanaSecundaria.EleccionesCargadas += VentanaSecundaria_EleccionesCargadas;
+                ventanaSecundaria.EleccionEliminada += VentanaSecundaria_EleccionEliminada;
+                ventanaSecundaria.Closing += VentanaSecundaria_Closing; // Manejar el evento Closing
+            }
+
+            ventanaSecundaria.Show();
+            ventanaSecundaria.Focus();
+        }
+        private void VentanaSecundaria_EleccionEliminada(object sender, EventArgs e)
+        {
+            canvasGrafico.Children.Clear(); // Limpia el Canvas
+        }
+        private void BtnAbrirVentanaSecundaria_Click(object sender, RoutedEventArgs e)
+        {
+            AbrirVentanaSecundaria();
+        }
+
+        private void VentanaSecundaria_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;  // Cancela el cierre de la ventana
+            ventanaSecundaria.Hide(); // Oculta la ventana en lugar de cerrarla
         }
         private void BtnFinalizarCoalicion_Click(object sender, RoutedEventArgs e)
         {
             // Asegúrate de que haya una elección actual seleccionada
             if (eleccionActual == null) return;
-            partidosArrastrados = eleccionActual.Partidos.ToHashSet();
             // si se ha alacanzado la mayoria absoluta  se muestra un mensaje indicandolo
-            if (partidosDerecha.Sum(p => p.Escaños) >= eleccionActual.MayoriaAbsoluta)
+            if (eleccionActual.PartidoConMasEscaños().Escaños >= eleccionActual.MayoriaAbsoluta)
             {
                 MessageBox.Show("Se ha alcanzado la mayoría absoluta");
             }
@@ -226,12 +321,10 @@ namespace PracticaFInal
 
                     // Coloca el resto de los partidos en la otra columna.
                     partidosIzquierda = eleccionActual.Partidos.Where(p => p != partidoConMayoria).ToList();
+                    MessageBox.Show("Se ha alcanzado la mayoría absoluta");
                 }
                 else
                 {
-                    //dibujar todos los partidos en la columna izquierda
-                    partidosArrastrados = eleccionActual.Partidos.ToHashSet();
-                    //partidosIzquierda = eleccionActual.Partidos;
                     foreach (var partido in eleccionActual.Partidos)
                     {
                         partidosIzquierda.Add(partido);
@@ -239,19 +332,18 @@ namespace PracticaFInal
                     partidosDerecha.Clear();
 
                 }
-                DibujarGraficoConPartidos();
+                Pactometro();
             }
-        } 
-        private void VentanaSecundaria_EleccionSeleccionada(Elecciones elecciones)
+        }
+        private void VentanaSecundaria_EleccionSeleccionada(object sender, EleccionesEventArgs e)
         {
             RestablecerScrollViewer();
-            
-            eleccionActual = elecciones;
-            partidosArrastrados.Clear();
-            DibujarGrafico(elecciones);
+
+            // Asumiendo que 'e.Eleccion' es la instancia de 'Elecciones' que necesitas
+            eleccionActual = e.Eleccion;
+            DibujarGrafico(e.Eleccion);
             btnFinalizarCoalicion.Visibility = Visibility.Collapsed;
             btnComparativa.Visibility = Visibility.Visible;
-
         }
         private void DibujarGrafico(Elecciones eleccionSeleccionada)
         {
@@ -266,13 +358,15 @@ namespace PracticaFInal
 
             // Ajusta estos márgenes según sea necesario para que todo quepa
             const double margin = 20; // Margen general para la izquierda y la derecha
-            double maxEscaños = eleccionSeleccionada.MayoriaAbsoluta; // Usamos mayoría absoluta como el valor máximo de escaños
-            double scaleFactor = (canvasGrafico.ActualHeight - margin * 2) / maxEscaños; // Escala basada en la mayoría absoluta
-            double totalBarWidth = canvasGrafico.ActualWidth - margin * 2; // Ancho total para todas las barras
+            //Obtengo el numero total de escaños del partido mas votado para hacer la escala de mi grafico
+            int maxEscaños =  eleccionSeleccionada.PartidoConMasEscaños().Escaños;
+
+            double scaleFactor = (canvasGrafico.ActualHeight) / maxEscaños *0.8;
+            double totalBarWidth = canvasGrafico.ActualWidth*0.9; // Ancho total para todas las barras
             double barWidth = totalBarWidth / partidos.Count - margin; // Ancho individual de la barra
             double requiredCanvasWidth = 0;
             // Agrega la leyenda de escaños
-            for (int i = 0; i <= maxEscaños; i += 10)
+            for (int i = 0; i <= maxEscaños + 10; i += 10)
             {
                 double yPosition = canvasGrafico.ActualHeight - (i * scaleFactor) - 30; // Ajusta la posición 'Y' para cada marca
 
@@ -323,8 +417,6 @@ namespace PracticaFInal
                     Height = barHeight,
                     Fill = colorBrush
                 };
-                //rect.MouseEnter += (s, e) => MostrarEscaños(rect, true);
-               // rect.MouseLeave += (s, e) => MostrarEscaños(rect, false);
 
                 Canvas.SetLeft(rect, (i * (barWidth + 15)) + 40); // Deja espacio para la leyenda
                 Canvas.SetTop(rect, canvasGrafico.ActualHeight - barHeight - 30);
@@ -343,7 +435,13 @@ namespace PracticaFInal
                 canvasGrafico.Children.Add(nombrePartido);
                 requiredCanvasWidth += barWidth + margin;
             }
-            canvasGrafico.Width = requiredCanvasWidth;
+            actualizarScroll(requiredCanvasWidth);
+
+            // Agrega el título de la elección en la parte superior del Canvas
+            AñadirTituloElecciones();
+        }
+        private void actualizarScroll(double requiredCanvasWidth)
+        {
             if (requiredCanvasWidth > scrollViewerGrafico.ViewportWidth)
             {
                 // Establece el ancho del Canvas para habilitar el desplazamiento horizontal
@@ -354,9 +452,6 @@ namespace PracticaFInal
                 // Establece el ancho del Canvas para que coincida con el ViewportWidth para desactivar el desplazamiento innecesario
                 canvasGrafico.Width = scrollViewerGrafico.ViewportWidth;
             }
-
-            // Agrega el título de la elección en la parte superior del Canvas
-            AñadirTituloElecciones();
         }
         private void AñadirTituloElecciones()
         {
@@ -408,7 +503,6 @@ namespace PracticaFInal
             partidosDerecha.Clear();
             columnaIzquierda.Children.Clear();
             columnaDerecha.Children.Clear();
-            partidosArrastrados.Clear();
 
 
         }
@@ -419,10 +513,9 @@ namespace PracticaFInal
         private void DibujarGraficoComparativo(string tipo)
         {
             RestablecerScrollViewer();
-            
+            double factor = 1;
 
-            List<Elecciones> eleccionesFiltradas = FiltrarEleccionesPorTipo(tipo).OrderByDescending(e => e.Fecha).ToList();
-
+            List<Elecciones> eleccionesFiltradas = FiltrarEleccionesPorTipo(tipo).OrderByDescending(e => Convert.ToInt32(e.Fecha.Substring(e.Fecha.Length - 4))).ToList();
             canvasGrafico.Children.Clear();
             ResetearColoresDisponibles();
             canvasGrafico.Width = Double.NaN;
@@ -430,10 +523,18 @@ namespace PracticaFInal
 
             // Ajustamos la altura del gráfico para dejar espacio para las etiquetas de escaños
             double leftMargin = 40; // Espacio para las marcas de escaños
-            double bottomMargin = 50; // Espacio para los nombres de los partidos
+            double bottomMargin = 30; // Espacio para los nombres de los partidos
 
-            double maxEscaños = eleccionActual.MayoriaAbsoluta;
-            double scaleFactor = (canvasGrafico.ActualHeight - bottomMargin) / maxEscaños;
+            int maxEscaños = eleccionActual.PartidoConMasEscaños().Escaños;
+            foreach (var eleccion in eleccionesFiltradas)
+            {
+                var partidoConMasEscaños = eleccion.PartidoConMasEscaños();
+                if (partidoConMasEscaños != null && partidoConMasEscaños.Escaños > maxEscaños)
+                {
+                    maxEscaños = partidoConMasEscaños.Escaños;
+                }
+            }
+            double scaleFactor = (canvasGrafico.ActualHeight) / maxEscaños * 0.8;
 
             int numberOfParties = eleccionesFiltradas.SelectMany(e => e.Partidos).Select(p => p.Nombre).Distinct().Count();
             int numberOfElections = eleccionesFiltradas.Count;
@@ -441,7 +542,7 @@ namespace PracticaFInal
             double requiredCanvasWidth = 0;
 
             // Dibujar las marcas de escaños en el margen izquierdo
-            for (int i = 0; i <= maxEscaños; i += 10)
+            for (int i = 0; i <= maxEscaños + 20; i += 10)
             {
                 double yPosition = canvasGrafico.ActualHeight - (i * scaleFactor) - bottomMargin; // Ajusta la posición 'Y' para cada marca
 
@@ -490,13 +591,21 @@ namespace PracticaFInal
                     FontWeight = FontWeights.Bold,
                     FontSize = 9,
                 };
-                Canvas.SetLeft(nombrePartido, partyStartingXPosition + (barWidth) * 2);
+                if (eleccionActual.Tipo.Equals("ELECCIONES GENERALES"))
+                {
+                    factor = 1;
+                }else
+                {
+                    factor = 0.5;
+                }
+                Canvas.SetLeft(nombrePartido, partyStartingXPosition + ((barWidth) * 2 )*factor);
                 Canvas.SetTop(nombrePartido, canvasGrafico.ActualHeight - nombrePartidosYPosition);
                 canvasGrafico.Children.Add(nombrePartido);
-                requiredCanvasWidth += barWidth + leftMargin +20;
+                requiredCanvasWidth += barWidth * (eleccionesFiltradas.Count + 0.5);
 
                 for (int j = 0; j < numberOfElections; j++)
                 {
+
                     Elecciones election = eleccionesFiltradas[j];
                     Partido partido = election.Partidos.FirstOrDefault(p => p.Nombre == partyName);
 
@@ -522,7 +631,7 @@ namespace PracticaFInal
                         };
 
                         Canvas.SetLeft(rect, partyStartingXPosition + (barWidth * j)+50);
-                        Canvas.SetBottom(rect, 50); // Margen inferior
+                        Canvas.SetTop(rect, canvasGrafico.ActualHeight - (partido.Escaños *scaleFactor) - 30);
                         canvasGrafico.Children.Add(rect);
                     }
 
@@ -542,7 +651,69 @@ namespace PracticaFInal
                 // Establece el ancho del Canvas para que coincida con el ViewportWidth para desactivar el desplazamiento innecesario
                 canvasGrafico.Width = scrollViewerGrafico.ViewportWidth;
             }
+            TituloSinFecha();
 
+            var yearColorMapping = AssignColorsToYears(eleccionesFiltradas);
+            AgregarLeyendaAlGrafico(eleccionesFiltradas, requiredCanvasWidth, scaleFactor, yearColorMapping);
+
+        }
+        private void AgregarLeyendaAlGrafico(List<Elecciones> eleccionesFiltradas, double requiredCanvasWidth, double scaleFactor, Dictionary<int, Color> yearColorMapping)
+        {
+            double width = canvasGrafico.ActualWidth;
+            double legendStartingXPosition = width / 1.1; // Comienza a la derecha del gráfico
+            double legendYPosition = ActualHeight / 4; // Comienza en la parte superior del área de la leyenda
+
+            for (int j = 0; j < eleccionesFiltradas.Count; j++)
+            {
+                Elecciones election = eleccionesFiltradas[j];
+                Rectangle legendColor = new Rectangle
+                {
+                    Width = 10,
+                    Height = 10,
+                    Fill = new SolidColorBrush(ColorFromYear(election.Fecha, yearColorMapping)) // Usa el mapeo de colores
+                };
+                Canvas.SetLeft(legendColor, legendStartingXPosition);
+                Canvas.SetTop(legendColor, legendYPosition + (j * 20));
+                canvasGrafico.Children.Add(legendColor);
+
+                TextBlock legendText = new TextBlock
+                {
+                    Text = election.Fecha.Substring(election.Fecha.Length - 4),
+                    FontWeight = FontWeights.Bold
+                };
+                Canvas.SetLeft(legendText, legendStartingXPosition + 15);
+                Canvas.SetTop(legendText, legendYPosition + (j * 20));
+                canvasGrafico.Children.Add(legendText);
+            }
+        }
+        private Dictionary<int, Color> AssignColorsToYears(List<Elecciones> elecciones)
+        {
+            // Extrae los años únicos y órdenalos
+            var uniqueYears = elecciones.Select(e => int.Parse(e.Fecha.Substring(e.Fecha.Length - 4)))
+                                         .Distinct()
+                                         .OrderBy(year => year)
+                                         .ToList();
+
+            // Colores base que quieres usar en orden
+            var baseColors = new List<Color> { Colors.LightGray, Colors.DarkGray, Colors.Gray };
+
+            // Asegúrate de que hay suficientes colores para los años, repite la lista de colores si es necesario
+            var colorsForYears = new List<Color>();
+            while (colorsForYears.Count < uniqueYears.Count)
+            {
+                colorsForYears.AddRange(baseColors);
+            }
+
+            // Asigna un color a cada año
+            var yearColorMapping = uniqueYears.Zip(colorsForYears, (year, color) => new { year, color })
+                                              .ToDictionary(item => item.year, item => item.color);
+
+            return yearColorMapping;
+        }
+        private Color ColorFromYear(string fecha, Dictionary<int, Color> yearColorMapping)
+        {
+            int year = int.Parse(fecha.Substring(fecha.Length - 4));
+            return yearColorMapping.TryGetValue(year, out Color color) ? color : Colors.Transparent;
         }
         private void BtnDibujarComparativa_Click(object sender, RoutedEventArgs e)
         {
@@ -555,6 +726,19 @@ namespace PracticaFInal
             // Restablece cualquier propiedad del ScrollViewer que pueda haber cambiado.
             scrollViewerGrafico.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             // Ajusta otras propiedades necesarias del ScrollViewer.
+        }
+        private void TituloSinFecha()
+        {
+            TextBlock tituloElecciones = new TextBlock
+            {
+                Text = eleccionActual.Tipo,
+                Width = canvasGrafico.ActualWidth - 50, // Deja espacio para la leyenda
+                TextAlignment = TextAlignment.Center,
+                FontWeight = FontWeights.Bold
+            };
+            Canvas.SetTop(tituloElecciones, 0);
+            Canvas.SetLeft(tituloElecciones, 25); // Alinea al inicio de las barras
+            canvasGrafico.Children.Add(tituloElecciones);
         }
 
 

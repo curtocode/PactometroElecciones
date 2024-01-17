@@ -1,0 +1,113 @@
+﻿<Window x:Class="PracticaFInal.VentanaAgregarElecciones"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PracticaFInal"
+        mc:Ignorable="d"
+        Title="VentanaAgregarElecciones" Height="450" Width="800">
+    <Window.Resources>
+        <LinearGradientBrush x:Key="GradientBackground">
+            <GradientStop Color="#ADD8E6" Offset="0"/>
+            <GradientStop Color="#FFFFFF" Offset="1"/>
+        </LinearGradientBrush>
+        <Style x:Key="BotonEstilo" TargetType="Button">
+            <Setter Property="Background" Value="DarkBlue"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Padding" Value="5,5"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="3" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="DarkCyan"/>
+                </Trigger>
+            </Style.Triggers>
+            <!--Hace que Los botones sean interactivos -->
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource GradientBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <!-- Columna para el DataGrid -->
+            <ColumnDefinition Width="*"/>
+            <!-- Columna para los botones -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Sección de Elecciones -->
+        <Label Grid.Row="0" Content="Tipo de Elección:"/>
+        <ComboBox Grid.Row="1" x:Name="cmbTipoEleccion">
+            <ComboBoxItem Content="ELECCIONES GENERALES"/>
+            <ComboBoxItem Content="ELECCIONES AUTONÓMICAS CyL"/>
+            <!-- Puede agregar más colores según sea necesario -->
+        </ComboBox>
+        
+       
+
+        <Label Grid.Row="4" Content="Fecha:"/>
+        <!-- DatePicker para la selección de la fecha -->
+        <DatePicker Grid.Row="5" x:Name="dpFecha" />
+
+        <!-- Espaciador -->
+        <Border Grid.Row="6" Background="#EEE" Margin="0,10" />
+
+        <!-- Sección de Partidos -->
+        <Label Grid.Row="7" Content="Nombre del Partido:"/>
+        <TextBox Grid.Row="8" x:Name="txtNombrePartido"/>
+
+        <Label Grid.Row="9" Content="Color del Partido:"/>
+        <!-- ComboBox para seleccionar el color -->
+        <ComboBox Grid.Row="10" x:Name="cmbColorPartido">
+            <ComboBoxItem Content="Rojo" Tag="#FF0000"/>
+            <ComboBoxItem Content="Verde" Tag="#00FF00"/>
+            <ComboBoxItem Content="Azul" Tag="#0000FF"/>
+            <ComboBoxItem Content="Morado" Tag="#8000FF"/>
+            <!-- Puede agregar más colores según sea necesario -->
+        </ComboBox>
+
+        <Label Grid.Row="11" Content="Número de Escaños:"/>
+        <TextBox Grid.Row="12" x:Name="txtEscañosPartido"/>
+
+        <!-- Espaciador -->
+        <DataGrid Grid.Row="14" Grid.Column="0" x:Name="dataGridPartidos" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nombre del Partido" Binding="{Binding Nombre}"/>
+                <DataGridTextColumn Header="Escaños" Binding="{Binding Escaños}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Botones a la derecha del DataGrid -->
+        <StackPanel Grid.Row="14" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch" Margin="10">
+            <Button Content="Agregar Partido" Click="AgregarPartido_Click" Style="{StaticResource BotonEstilo}" HorizontalAlignment="Stretch" />
+            <Button  Name="AgregarEleccion" Content="Agregar Elección" Click="AgregarEleccion_Click"  Style="{StaticResource BotonEstilo}" HorizontalAlignment="Stretch" Visibility="Hidden"/>
+        </StackPanel>
+    </Grid>
+</Window>

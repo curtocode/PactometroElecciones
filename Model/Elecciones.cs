@@ -51,7 +51,23 @@ namespace PracticaFInal.Model
         public int MayoriaAbsoluta
         {
             get { return mayoriaAbsoluta; }
-            set { mayoriaAbsoluta = value; }
+        }
+        public Partido PartidoConMasEscaños()
+        {
+            if (partidos == null || partidos.Count == 0)
+            {
+                return null;
+            }
+
+            Partido partidoMaxEscaños = partidos[0];
+            foreach (var partido in partidos)
+            {
+                if (partido.Escaños > partidoMaxEscaños.Escaños)
+                {
+                    partidoMaxEscaños = partido;
+                }
+            }
+            return partidoMaxEscaños;
         }
     }
 }

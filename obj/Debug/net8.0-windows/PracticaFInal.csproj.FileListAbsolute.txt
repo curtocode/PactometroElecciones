@@ -24,3 +24,7 @@ C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\
 C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\Debug\net8.0-windows\VentanaSecundaria.g.cs
 C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\Debug\net8.0-windows\VentanaSecundaria.baml
 C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\Debug\net8.0-windows\PracticaFInal.sourcelink.json
+C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\bin\Debug\net8.0-windows\datos_electorales.json
+C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\Debug\net8.0-windows\App.baml
+C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\Debug\net8.0-windows\VentanaAgregarElecciones.g.cs
+C:\Users\Alejandro\Desktop\USAL\tercerCurso\igu\PracticaFInal\PracticaFInal\obj\Debug\net8.0-windows\VentanaAgregarElecciones.baml

@@ -7,12 +7,18 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="VentanaAgregarElecciones.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="VentanaSecundaria.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="VentanaAgregarElecciones.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="VentanaSecundaria.xaml">
